@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
  import { ToastContainer, toast } from 'react-toastify';
 
   import 'react-toastify/dist/ReactToastify.css';
@@ -10,6 +11,11 @@ export default function Movies() {
   const [query, setQuery] = useState('');
   const [movieName, setMovieName] = useState('');
   const [status, setStatus] = useState('idle');
+  const location = useLocation()
+  const navigate = useNavigate()
+
+
+  
 
     const onChange = e => {
     
@@ -30,7 +36,10 @@ export default function Movies() {
     }
     setMovies([]);
     setMovieName(query);
+    navigate({ ...location, search: `?query=${query}` })
     setQuery('');
+    
+    
   };
 
   useEffect(() => {
@@ -73,7 +82,7 @@ export default function Movies() {
               <ul>
                   {movies.map(movie => (
                       <li key={movie.id}>
-                          <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+                      <Link to={`/movies/${movie.id}`} state={{ from: location }}>{movie.title}</Link>
                       </li>
                   ))}
               </ul>

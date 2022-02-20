@@ -1,10 +1,10 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 
 export default function Homepage() {
   const [trendingMovies, setTrendingMovies] = useState([]);
-  
+  const location = useLocation()
 
   useEffect(() => {
   
@@ -22,7 +22,7 @@ export default function Homepage() {
         <ul>
         {trendingMovies.map(movie => {
             return <li key={movie.id}>
-              <Link to={`/movies/${movie.id}`}>{movie.original_title ?? movie.name}</Link>
+              <Link to={`/movies/${movie.id}`} state={{from:location}}>{movie.original_title ?? movie.name}</Link>
             </li>
           })}
         </ul>
