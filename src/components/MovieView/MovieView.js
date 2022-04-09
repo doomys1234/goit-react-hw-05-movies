@@ -1,6 +1,6 @@
 import { lazy } from "react";
-import { useState, useEffect } from "react";
-import { useParams, Link, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useParams, Link, Routes, Route, useLocation } from "react-router-dom";
 import noPoster from '../../img/no-poster.jpeg'
 
 
@@ -10,14 +10,13 @@ import Reviews from "components/Reviews/Reviews";
 export default function MovieView() {
     const [movie, setMovie] = useState(null)
     const { movieId } = useParams()
-    const location = useLocation() 
-    const navigate = useNavigate()
+    const location = useLocation()
+   
+    const navigatePath = useRef(location)
 
     
    
-    const onGoBack = () =>{
-        navigate(location.state.from)
-    }
+    
     
     
     
@@ -33,7 +32,7 @@ export default function MovieView() {
 
     return (
         <>
-            <button type="button" onClick={onGoBack}>Go Back</button>
+            <button type="button"><Link to={navigatePath.current?.state?.from ?? `/`} state={{ from: navigatePath.current }}>Go Back</Link></button>
             {movie && (
                 <div>
                     <img src={movie.poster_path ?`https://image.tmdb.org/t/p/w300/${movie.poster_path}`: noPoster} alt='movie poster'/>

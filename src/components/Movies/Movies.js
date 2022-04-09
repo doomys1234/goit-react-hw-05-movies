@@ -1,25 +1,22 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
  import { ToastContainer, toast } from 'react-toastify';
 
   import 'react-toastify/dist/ReactToastify.css';
 
 export default function Movies() {
+  const location = useLocation()
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState('');
-  const [movieName, setMovieName] = useState('');
+  const [movieName, setMovieName] = useState(() => {
+    return localStorage.getItem('movieName') ?? ''});
   const [status, setStatus] = useState('idle');
-  const location = useLocation()
   const navigate = useNavigate()
 
 
-  
-
-    const onChange = e => {
-    
-    setQuery(e.target.value.trim());
+  const onChange = e => {
+  setQuery(e.target.value.trim());
     
   };
 
@@ -42,6 +39,8 @@ export default function Movies() {
     
   };
 
+
+
   useEffect(() => {
     if (movieName === '') {
       return;
@@ -62,6 +61,7 @@ export default function Movies() {
         console.log(error);
       });
     setStatus('successful');
+    localStorage.setItem('movieName',JSON.stringify(movieName) )
   }, [movieName]);
 
   return (
