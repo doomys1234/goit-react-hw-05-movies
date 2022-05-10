@@ -1,23 +1,27 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
- import { ToastContainer, toast } from 'react-toastify';
+import { useState, useEffect, useRef } from 'react';
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
-  import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Movies() {
-  const location = useLocation()
+  const location = useLocation();
+  const navigatePath = useRef();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState('');
-  const [movieName, setMovieName] = useState(() => {
-    return localStorage.getItem('movieName') ?? ''});
+  const [movieName, setMovieName] = useState(query);
   const [status, setStatus] = useState('idle');
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   const onChange = e => {
-  setQuery(e.target.value.trim());
-    
+    setQuery(e.target.value.trim());
   };
 
   const handleSubmit = e => {
@@ -27,24 +31,29 @@ export default function Movies() {
       return;
     }
     if (query === movieName) {
-        toast.warning('You have it right now');
-        setQuery('');
+      toast.warning('You have it right now');
+      setQuery('');
       return;
     }
+
     setMovies([]);
     setMovieName(query);
-    navigate({ ...location, search: `?query=${query}` })
+    navigate({ ...location, search: `?query=${query}` });
+
     setQuery('');
-    
-    
   };
-
-
+  useEffect(() => {
+    const querySearch = new URLSearchParams(location.search).get('query');
+    if (querySearch) {
+      setMovieName(querySearch);
+    }
+  }, []);
 
   useEffect(() => {
     if (movieName === '') {
       return;
     }
+
     setStatus('pending');
 
     fetch(
@@ -60,8 +69,8 @@ export default function Movies() {
         setStatus('rejected');
         console.log(error);
       });
+
     setStatus('successful');
-    localStorage.setItem('movieName',JSON.stringify(movieName) )
   }, [movieName]);
 
   return (
@@ -76,18 +85,20 @@ export default function Movies() {
           value={query}
         />
         <button type="submit">Search</button>
-          </form>
-          
-          {status === 'successful' && (
-              <ul>
-                  {movies.map(movie => (
-                      <li key={movie.id}>
-                      <Link to={`/movies/${movie.id}`} state={{ from: location }}>{movie.title}</Link>
-                      </li>
-                  ))}
-              </ul>
-          )}
-          <ToastContainer />
+      </form>
+
+      {status === 'successful' && (
+        <ul>
+          {movies.map(movie => (
+            <li key={movie.id}>
+              <Link to={`/movies/${movie.id}`} state={{ from: location }}>
+                {movie.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+      <ToastContainer />
     </>
   );
 }

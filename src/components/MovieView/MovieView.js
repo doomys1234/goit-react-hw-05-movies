@@ -13,6 +13,7 @@ export default function MovieView() {
     const location = useLocation()
    
     const navigatePath = useRef(location)
+    console.log(navigatePath);
 
     
    
