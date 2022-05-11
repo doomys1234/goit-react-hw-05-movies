@@ -49,12 +49,12 @@ export default function MovieView() {
                                 {movie.genres.map(genre => (<li key={genre.id}>{genre.name}</li>)) }
                             </ul>
                         )}
-                        <Link to={`movies/${movie.id}/cast`}>Cast</Link>
-                        <Link to={`movies/${movie.id}/reviews`}>Reviews</Link>
+                        <Link to={`/movies/${movieId}/cast`}>Cast</Link>
+                        <Link to={`/movies/${movieId}/reviews`}>Reviews</Link>
                     </div>
                     <Routes>
-                        <Route path={`movies/:movieId/cast`} element={<Cast />} />
-                        <Route path={`movies/:movieId/reviews`} element={<Reviews/>}/>
+                        <Route path={`cast`} element={<Cast />} />
+                        <Route path={`reviews`} element={<Reviews/>}/>
                     </Routes>
                     
         </div>
